@@ -9,7 +9,7 @@ jcub3d
 July 9, 2014
 v. 1.0
 
-Acknowledged/Tested with: 
+Tested with: 
 numpy 1.8.1
 OpenCV 2.4.9
 Ubuntu 14.04
@@ -48,31 +48,27 @@ def main():
     out = cv2.VideoWriter(outName,fourcc, fps, (width,height))
 
 
-    while(cap.isOpened()):
-    
+    while(cap.isOpened()):   
         nextFrameExists, frame = cap.read()       
         if nextFrameExists:
 
             if COLOR:
                 ftFrame = frame
-                for number in range(TIMES_TO_FT):
+                for number in range(TIMES_TO_FT):       #xrange would be better, but eliminated in Py3 
                     ftFrame = ftcolor(ftFrame,NORMALL)
                 if not NORMALL:
                     ftFrame = normalize(ftFrame)
-
-            if not COLOR:
+            else:
                 #Frame to grayscale
                 ftFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
                 if NORMALL:    
                     for number in range(TIMES_TO_FT):                
                         ftFrame = ftnorm(ftFrame)  
-                elif not NORMALL:
+                else:
                     for number in range(TIMES_TO_FT):                
                         ftFrame = ft(ftFrame)                        
                     ftFrame = normalize(ftFrame)
-                    #ftFrame = cv2.cvtColor(ftFrame, cv2.COLOR_GRAY2BGR) #Not Needed
-
 
             if SHOW: 
                 cv2.imshow('ft',ftFrame)
