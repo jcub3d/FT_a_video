@@ -54,9 +54,18 @@ class VideoObject:
         self.out_writer = cv2.VideoWriter(self.out_name, self.fourcc, self.fps, (self.width, self.height))
         
 
-    def write_video(self, function, write_changes=True, preserve_audio=False, view_while_processing=False):
-        '''function will be performed on all frames of video
-           function should accept 3d numpy array and return 2d or 3d numpy array
+    def apply_function_to_vid(self, function, write_changes=True, preserve_audio=False, view_while_processing=False):
+        ''' Apply a function to each frame in the video.  This is the main function
+            to process the video and write the output video file
+        
+           function        should accept 3d numpy array and return 2d/3d numpy array
+                           of same shape in lowest 2 dimensions (i.e. width/height)
+           write_changes   True will write to output file, False would be for a dry 
+                           run (likely to be used with view_while_processing)
+           preserve_audio  If audio present in input file, set this to True if you
+                           want to retain the audio in the new video
+           view_while_processing   When True,  two screens showing original frame
+                                   and new frame will appear             
         '''
         while self.cap.isOpened():
             next_frame_exists, frame = self.cap.read()
@@ -82,10 +91,10 @@ class VideoObject:
                 
         if preserve_audio and write_changes:
             print('Processing audio ...')
-            self.process_audio()#ADDDDDD ARGS  
+            self.process_audio()#FIX WHEN FIXED BELOW, WITH ADDED ARGS
 
     def process_audio(self):
-        pass #######FIX THIS FUNCTIONS
+        pass #######FIX THIS FUNCTION
         #Strip audio from original file
         cmd = "ffmpeg -i %s -vn -ac 2 -ar 44100 -ab 320k -f mp3 output.mp3" % filename
         os.system(cmd)
@@ -107,7 +116,7 @@ def main():
         print(arr)
         return(arr*2)
     
-    video.write_video(frame_printer, write_changes=False, view_while_processing=True)
+    video.apply_function_to_vid(frame_printer, write_changes=False, view_while_processing=True)
 
 
 
